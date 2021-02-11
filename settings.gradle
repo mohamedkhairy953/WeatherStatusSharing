@@ -1,0 +1,8 @@
+rootProject.name = "WeatherStatusSharing"
+include ':app'
+include ':core'
+include ':camera'
+include ':navigation'
+include ':photo_list'
+include ':captured_photo'
+include ':share_photo'

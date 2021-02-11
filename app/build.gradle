@@ -1,0 +1,35 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+apply from: '../android_common_dependencies.gradle'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        applicationId "com.khairy.weather"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation project(":core")
+    implementation project(":camera")
+    implementation project(":captured_photo")
+    implementation project(":navigation")
+    implementation project(":photo_list")
+    implementation project(":share_photo")
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
