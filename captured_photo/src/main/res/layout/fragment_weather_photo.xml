@@ -52,14 +52,14 @@
             <TextView
                 android:id="@+id/locationNameTv"
                 android:layout_width="0dp"
+
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="@dimen/dp_8"
                 android:padding="@dimen/dp_16"
-                android:background="@color/black_50_transparent"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/sp_20"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/temperature_status_iv"
+                app:layout_constraintStart_toEndOf="@+id/tempTv"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Fifth Settlement, Cairo" />
 
@@ -69,7 +69,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/sp_16"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/temperature_status_iv"
                 app:layout_constraintStart_toStartOf="@+id/temperature_status_iv"
                 app:layout_constraintTop_toBottomOf="@id/temperature_status_iv"
@@ -79,22 +78,19 @@
                 android:id="@+id/temperature_status_iv"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:visibility="gone"
-
-                android:layout_margin="@dimen/dp_16"
-                app:layout_constraintEnd_toEndOf="@+id/locationNameTv"
-                app:layout_constraintTop_toBottomOf="@+id/locationNameTv" />
+                app:layout_constraintBottom_toBottomOf="@+id/locationNameTv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/locationNameTv"
+                app:layout_constraintTop_toTopOf="@+id/weatherPhotoIv" />
 
             <TextView
                 android:id="@+id/tempTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/sp_50"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/temperature_status_iv"
-                app:layout_constraintStart_toStartOf="@+id/locationNameTv"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/temperature_status_iv"
                 tools:text="17" />
 
@@ -104,8 +100,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_18"
-                android:visibility="gone"
-
                 app:layout_constraintBottom_toBottomOf="@+id/tempStatusTv"
                 app:layout_constraintEnd_toEndOf="@+id/tempTv"
                 app:layout_constraintStart_toStartOf="@+id/tempTv"

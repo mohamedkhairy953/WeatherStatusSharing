@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.khairy.captured_photo.R
@@ -34,6 +35,8 @@ import com.khairy.core.utils.PermissionManager
 import com.khairy.navigation_module.PHOTO_EXTRA
 import com.khairy.navigation_module.WEATHER_PHOTO_EXTRA
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -95,12 +98,15 @@ class WeatherPhotoFragment : Fragment(),
 
     private fun handleWeatherData(weatherDto: WeatherDto?) {
         if (weatherDto != null) {
-            val bitmap = generateWeatherDataOverTheImage(weatherDto)
-            photoPath?.let {
-                observeFileChanges(it)
-                val f = replaceOriginalBitmapWithGeneratedBitmap(it, bitmap)
-                viewModel.saveWeatherPhoto(f.absolutePath)
+            lifecycleScope.launch {
+                val bitmap = generateWeatherDataOverTheImage(weatherDto)
+                photoPath?.let {
+                    observeFileChanges(it)
+                    val f = replaceOriginalBitmapWithGeneratedBitmap(it, bitmap)
+                    viewModel.saveWeatherPhoto(f.absolutePath)
+                }
             }
+
         }
     }
 
@@ -128,31 +134,35 @@ class WeatherPhotoFragment : Fragment(),
         findNavController().navigate(R.id.action_weatherFragment_to_shareFragment, bundle)
     }
 
-    private fun generateWeatherDataOverTheImage(weatherDto: WeatherDto): Bitmap {
+    private suspend fun generateWeatherDataOverTheImage(weatherDto: WeatherDto): Bitmap {
         setViews(weatherDto)
+        delay(1000) //workaround and not reliable solution
         return convertViewToBitmap(binding.weatherPhotoLayout)
     }
 
     @SuppressLint("SetTextI18n")
     private fun setViews(weatherDto: WeatherDto) {
         binding.locationNameTv.text =
-            String.format("%s", weatherDto.countryName) +
-                    " " + weatherDto.tempStatus +
-                    " " + String.format("max/min  %s ° / %s °", weatherDto.maxTemp, weatherDto.minTemp)
-
+            String.format("%s, %s", weatherDto.name, weatherDto.countryName)
+        binding.tempStatusTv.text = weatherDto.tempStatus
+        binding.tempTv.text = String.format("%s°", weatherDto.temp)
+        binding.minMaxTv.text = String.format(
+            "%s ° / %s °",
+            weatherDto.maxTemp,
+            weatherDto.minTemp
+        )
         Glide.with(requireContext()).load(weatherDto.tempIconURL).into(binding.temperatureStatusIv)
         setOverlayVisible(true)
     }
 
-    private fun convertViewToBitmap(v: ConstraintLayout): Bitmap {
-        /*  v.measure(
-              View.MeasureSpec.makeMeasureSpec(v.layoutParams.width, View.MeasureSpec.EXACTLY),
-              View.MeasureSpec.makeMeasureSpec(v.layoutParams.height, View.MeasureSpec.EXACTLY)
-          )*/
-        //  v.layout(0, 0, v.measuredWidth, v.measuredHeight);
-
-        val b = Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)
+    private suspend fun convertViewToBitmap(v: ConstraintLayout): Bitmap {
+        val b = Bitmap.createBitmap(
+            v.width,
+            v.height,
+            Bitmap.Config.ARGB_8888
+        )
         val c = Canvas(b)
+        v.layout(v.left, v.top, v.right, v.bottom)
         v.draw(c)
         return b
     }
